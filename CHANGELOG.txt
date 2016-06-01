@@ -6,6 +6,7 @@ Changelog
 
  * Page slugs now allow unicode on Django >= 1.9 (Behzad Nategh)
  * Image upload form in image chooser now performs client side validation so that the selected file is not lost in the submission (Jack Paine)
+ * Fix: StreamField can now be used in an InlinePanel (Gagaro)
 
 
 1.5.1 (xx.xx.xxxx) - IN DEVELOPMENT

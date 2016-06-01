@@ -21,6 +21,7 @@ Minor features
 Bug fixes
 ~~~~~~~~~
 
+ * Fix: StreamField can now be used in an InlinePanel (Gagaro)
 
 Upgrade considerations
 ======================
