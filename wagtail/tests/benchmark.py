@@ -7,7 +7,7 @@ from django.test import TestCase
 
 
 class Benchmark(TestCase):
-    repeat = 10
+    repeat = 30
 
     def test(self):
         timings = []

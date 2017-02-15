@@ -83,3 +83,45 @@ class BenchPageExplorerWithCustomURLPages(Benchmark, WagtailTestUtils):
 
         # Check the URLs were rendered correctly
         self.assertContains(response, 'a href="http:///49/pointless-suffix/"')
+
+
+class BenchPageExplorerOrderingWith1000Pages(Benchmark, WagtailTestUtils):
+    """
+    Creates 1000 pages of a class with a customised the .url property.
+    This will check how long it takes to generate URLs for all of these
+    pages.
+    """
+
+    def setUp(self):
+        self.root_page = Page.objects.get(id=1)
+
+        # Add a site so the URLs render correctly
+        Site.objects.create(is_default_site=True, root_page=self.root_page)
+
+        body = '[' + ','.join(['{"type": "text", "value": "%s"}' % ('foo' * 2000)] * 100) + ']'
+
+        # Create 1000 large pages
+        for i in range(1000):
+            self.root_page.add_child(instance=SingleEventPage(
+                title="Event {}".format(i + 1),
+                slug=str(i + 1),
+                body=body,
+                date_from=timezone.now(),
+                audience="public",
+                location="reykjavik",
+                cost="cost",
+            ))
+        self.login()
+
+    def bench(self):
+        response = self.client.get(reverse('wagtailadmin_explore', args=(self.root_page.id, )) + '?ordering=ord')
+
+        # Check the response was good
+        self.assertEqual(response.status_code, 200)
+
+        # Check every single page was rendered
+        self.assertContains(response, "Event 1")
+        self.assertContains(response, "Event 999")
+
+        # Check the URLs were rendered correctly
+        self.assertContains(response, 'a href="http:///49/pointless-suffix/"')
